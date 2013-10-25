@@ -1,4 +1,6 @@
 <?php
+
+namespace Ibw\JobeetBundle\Utils;
 use Ibw\JobeetBundle\Utils\Jobeet as Jobeet;
 
 class Job {

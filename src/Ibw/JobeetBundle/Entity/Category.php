@@ -27,6 +27,8 @@ class Category {
 	 */
 	private $category_affiliates;
 
+	private $active_jobs;
+
 	/**
 	 * Constructor
 	 */
@@ -129,6 +131,14 @@ class Category {
 
 	public function __toString() {
 		return $this->getName() ? $this->getName() : "";
+	}
+
+	public function getActiveJobs() {
+		return $this->active_jobs;
+	}
+
+	public function setActiveJobs($jobs) {
+		$this->active_jobs = $jobs;
 	}
 
 }

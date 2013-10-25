@@ -1,6 +1,7 @@
 # src/Ibw/JobeetBundle/Resources/config/doctrine/Job.orm.yml
 Ibw\JobeetBundle\Entity\Job:
   type: entity
+  repositoryClass: Ibw\JobeetBundle\Repository\JobRepository
   table: job
   id:
     id:
@@ -60,5 +61,5 @@ Ibw\JobeetBundle\Entity\Job:
         name: category_id
         referencedColumnName: id
   lifecycleCallbacks:
-    prePersist: [ setCreatedAtValue ]
-    preUpdate: [ setUpdatedAtValue ]
+        prePersist: [ setCreatedAtValue, setExpiresAtValue ]
+        preUpdate: [ setUpdatedAtValue ]  

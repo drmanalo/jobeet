@@ -18,21 +18,33 @@ class JobController extends Controller {
 	 *
 	 */
 	public function indexAction() {
-		
+
 		$em = $this->getDoctrine()->getManager();
 
-		$entities = $em->getRepository('IbwJobeetBundle:Job')->findAll();
+		$categories = $em->getRepository('IbwJobeetBundle:Category')
+				->getWithJobs();
+
+		foreach ($categories as $category) {
+			$category
+					->setActiveJobs(
+							$em->getRepository('IbwJobeetBundle:Job')
+									->getActiveJobs($category->getId(),
+											$this->container
+													->getParameter(
+															'max_jobs_on_homepage')));
+		}
 
 		return $this
 				->render('IbwJobeetBundle:Job:index.html.twig',
-						array('entities' => $entities,));
+						array('categories' => $categories));
 	}
+
 	/**
 	 * Creates a new Job entity.
 	 *
 	 */
 	public function createAction(Request $request) {
-		
+
 		$entity = new Job();
 		$form = $this->createCreateForm($entity);
 		$form->handleRequest($request);
@@ -63,7 +75,7 @@ class JobController extends Controller {
 	 * @return \Symfony\Component\Form\Form The form
 	 */
 	private function createCreateForm(Job $entity) {
-		
+
 		$form = $this
 				->createForm(new JobType(), $entity,
 						array(
@@ -81,7 +93,7 @@ class JobController extends Controller {
 	 *
 	 */
 	public function newAction() {
-		
+
 		$entity = new Job();
 		$form = $this->createCreateForm($entity);
 
@@ -96,10 +108,10 @@ class JobController extends Controller {
 	 *
 	 */
 	public function showAction($id) {
-		
+
 		$em = $this->getDoctrine()->getManager();
 
-		$entity = $em->getRepository('IbwJobeetBundle:Job')->find($id);
+		$entity = $em->getRepository('IbwJobeetBundle:Job')->getActiveJob($id);
 
 		if (!$entity) {
 			throw $this->createNotFoundException('Unable to find Job entity.');
@@ -118,7 +130,7 @@ class JobController extends Controller {
 	 *
 	 */
 	public function editAction($id) {
-		
+
 		$em = $this->getDoctrine()->getManager();
 
 		$entity = $em->getRepository('IbwJobeetBundle:Job')->find($id);
@@ -145,7 +157,7 @@ class JobController extends Controller {
 	 * @return \Symfony\Component\Form\Form The form
 	 */
 	private function createEditForm(Job $entity) {
-		
+
 		$form = $this
 				->createForm(new JobType(), $entity,
 						array(
@@ -163,7 +175,7 @@ class JobController extends Controller {
 	 *
 	 */
 	public function updateAction(Request $request, $id) {
-		
+
 		$em = $this->getDoctrine()->getManager();
 
 		$entity = $em->getRepository('IbwJobeetBundle:Job')->find($id);
@@ -197,7 +209,7 @@ class JobController extends Controller {
 	 *
 	 */
 	public function deleteAction(Request $request, $id) {
-		
+
 		$form = $this->createDeleteForm($id);
 		$form->handleRequest($request);
 
@@ -225,7 +237,7 @@ class JobController extends Controller {
 	 * @return \Symfony\Component\Form\Form The form
 	 */
 	private function createDeleteForm($id) {
-		
+
 		return $this->createFormBuilder()
 				->setAction(
 						$this
