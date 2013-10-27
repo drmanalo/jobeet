@@ -32,6 +32,13 @@ class JobController extends Controller {
 											$this->container
 													->getParameter(
 															'max_jobs_on_homepage')));
+			$category
+					->setMoreJobs(
+							$em->getRepository('IbwJobeetBundle:Job')
+									->countActiveJobs($category->getId())
+									- $this->container
+											->getParameter(
+													'max_jobs_on_homepage'));
 		}
 
 		return $this

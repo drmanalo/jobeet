@@ -5,3 +5,9 @@ IbwJobeetBundle_job:
 ibw_jobeet_homepage:
     pattern:  /
     defaults: { _controller: IbwJobeetBundle:Job:index }
+    
+IbwJobeetBundle_category:
+    pattern: /category/{slug}/{page}
+    defaults: { _controller: IbwJobeetBundle:Category:show, page: 1 }
+
+    

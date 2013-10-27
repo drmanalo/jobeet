@@ -1,6 +1,7 @@
 <?php
 
 namespace Ibw\JobeetBundle\Entity;
+use Ibw\JobeetBundle\Utils\Jobeet as Jobeet;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -18,6 +19,11 @@ class Category {
 	private $name;
 
 	/**
+	 * @var string
+	 */
+	private $slug;
+
+	/**
 	 * @var \Doctrine\Common\Collections\Collection
 	 */
 	private $jobs;
@@ -25,16 +31,18 @@ class Category {
 	/**
 	 * @var \Doctrine\Common\Collections\Collection
 	 */
-	private $category_affiliates;
-
+	private $affiliates;
+	
 	private $active_jobs;
+	
+	private $more_jobs;
 
 	/**
 	 * Constructor
 	 */
 	public function __construct() {
 		$this->jobs = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->category_affiliates = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->affiliates = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
 	/**
@@ -68,6 +76,27 @@ class Category {
 	}
 
 	/**
+	 * Set slug
+	 *
+	 * @param string $slug
+	 * @return Category
+	 */
+	public function setSlug($slug) {
+		$this->slug = $slug;
+
+		return $this;
+	}
+
+	/**
+	 * Get slug
+	 *
+	 * @return string 
+	 */
+	public function getSlug() {
+		return $this->slug;
+	}
+
+	/**
 	 * Add jobs
 	 *
 	 * @param \Ibw\JobeetBundle\Entity\Job $jobs
@@ -98,47 +127,57 @@ class Category {
 	}
 
 	/**
-	 * Add category_affiliates
+	 * Add affiliates
 	 *
-	 * @param \Ibw\JobeetBundle\Entity\CategoryAffiliate $categoryAffiliates
+	 * @param \Ibw\JobeetBundle\Entity\Affiliate $affiliates
 	 * @return Category
 	 */
-	public function addCategoryAffiliate(
-			\Ibw\JobeetBundle\Entity\CategoryAffiliate $categoryAffiliates) {
-		$this->category_affiliates[] = $categoryAffiliates;
+	public function addAffiliate(
+			\Ibw\JobeetBundle\Entity\Affiliate $affiliates) {
+		$this->affiliates[] = $affiliates;
 
 		return $this;
 	}
 
 	/**
-	 * Remove category_affiliates
+	 * Remove affiliates
 	 *
-	 * @param \Ibw\JobeetBundle\Entity\CategoryAffiliate $categoryAffiliates
+	 * @param \Ibw\JobeetBundle\Entity\Affiliate $affiliates
 	 */
-	public function removeCategoryAffiliate(
-			\Ibw\JobeetBundle\Entity\CategoryAffiliate $categoryAffiliates) {
-		$this->category_affiliates->removeElement($categoryAffiliates);
+	public function removeAffiliate(
+			\Ibw\JobeetBundle\Entity\Affiliate $affiliates) {
+		$this->affiliates->removeElement($affiliates);
 	}
 
 	/**
-	 * Get category_affiliates
+	 * Get affiliates
 	 *
 	 * @return \Doctrine\Common\Collections\Collection 
 	 */
-	public function getCategoryAffiliates() {
-		return $this->category_affiliates;
+	public function getAffiliates() {
+		return $this->affiliates;
 	}
-
-	public function __toString() {
-		return $this->getName() ? $this->getName() : "";
+	/**
+	 * @ORM\PrePersist
+	 */
+	public function setSlugValue() {
+		$this->slug = Jobeet::slugify($this->getName());
+		return $this;
 	}
-
+	
 	public function getActiveJobs() {
 		return $this->active_jobs;
 	}
-
+	
 	public function setActiveJobs($jobs) {
 		$this->active_jobs = $jobs;
 	}
-
+	
+	public function getMoreJobs() {
+		return $this->more_jobs;
+	}
+	
+	public function setMoreJobs($jobs) {
+		$this->more_jobs = $jobs >= 0 ? $jobs : 0;
+	}
 }
