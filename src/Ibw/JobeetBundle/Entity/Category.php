@@ -180,4 +180,8 @@ class Category {
 	public function setMoreJobs($jobs) {
 		$this->more_jobs = $jobs >= 0 ? $jobs : 0;
 	}
+	
+	public function __toString() {
+		return $this->getName() ? $this->getName() : "";
+	}
 }
