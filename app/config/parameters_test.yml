@@ -6,9 +6,9 @@ parameters:
     database_name: jobeet_test
     database_user: root
     database_password: devel0per
-    mailer_transport: smtp
-    mailer_host: 127.0.0.1
-    mailer_user: null
-    mailer_password: null
+    mailer_transport: smtp.gmail.com
+    mailer_host: gmail
+    mailer_user: D3v.redmine@gmail.com
+    mailer_password: D3v310pm3nt
     locale: en
     secret: 87bdeb73622089bb00d4b49497dfc3600c3dc76c
