@@ -13,7 +13,9 @@ class CategoryControllerTest extends WebTestCase {
 
 	private $em;
 	private $application;
+	
 	public function setUp() {
+		
 		static::$kernel = static::createKernel();
 		static::$kernel->boot();
 

@@ -15,6 +15,7 @@ class JobControllerTest extends WebTestCase {
 	private $application;
 
 	public function setUp() {
+		
 		static::$kernel = static::createKernel();
 		static::$kernel->boot();
 

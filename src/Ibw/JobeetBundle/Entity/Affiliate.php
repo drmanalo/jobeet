@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Affiliate
  */
 class Affiliate {
+
 	/**
 	 * @var integer
 	 */
@@ -28,6 +29,11 @@ class Affiliate {
 	private $token;
 
 	/**
+	 * @var boolean
+	 */
+	private $is_active;
+
+	/**
 	 * @var \DateTime
 	 */
 	private $created_at;
@@ -35,13 +41,13 @@ class Affiliate {
 	/**
 	 * @var \Doctrine\Common\Collections\Collection
 	 */
-	private $category_affiliates;
+	private $categories;
 
 	/**
 	 * Constructor
 	 */
 	public function __construct() {
-		$this->category_affiliates = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->categories = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
 	/**
@@ -117,6 +123,27 @@ class Affiliate {
 	}
 
 	/**
+	 * Set is_active
+	 *
+	 * @param boolean $isActive
+	 * @return Affiliate
+	 */
+	public function setIsActive($isActive) {
+		$this->is_active = $isActive;
+
+		return $this;
+	}
+
+	/**
+	 * Get is_active
+	 *
+	 * @return boolean 
+	 */
+	public function getIsActive() {
+		return $this->is_active;
+	}
+
+	/**
 	 * Set created_at
 	 *
 	 * @param \DateTime $createdAt
@@ -138,40 +165,71 @@ class Affiliate {
 	}
 
 	/**
-	 * Add category_affiliates
+	 * Add categories
 	 *
-	 * @param \Ibw\JobeetBundle\Entity\CategoryAffiliate $categoryAffiliates
+	 * @param \Ibw\JobeetBundle\Entity\Category $categories
 	 * @return Affiliate
 	 */
-	public function addCategoryAffiliate(
-			\Ibw\JobeetBundle\Entity\CategoryAffiliate $categoryAffiliates) {
-		$this->category_affiliates[] = $categoryAffiliates;
+	public function addCategorie(\Ibw\JobeetBundle\Entity\Category $categories) {
+		$this->categories[] = $categories;
 
 		return $this;
 	}
 
 	/**
-	 * Remove category_affiliates
+	 * Remove categories
 	 *
-	 * @param \Ibw\JobeetBundle\Entity\CategoryAffiliate $categoryAffiliates
+	 * @param \Ibw\JobeetBundle\Entity\Category $categories
 	 */
-	public function removeCategoryAffiliate(
-			\Ibw\JobeetBundle\Entity\CategoryAffiliate $categoryAffiliates) {
-		$this->category_affiliates->removeElement($categoryAffiliates);
+	public function removeCategorie(
+			\Ibw\JobeetBundle\Entity\Category $categories) {
+		$this->categories->removeElement($categories);
 	}
 
 	/**
-	 * Get category_affiliates
+	 * Get categories
 	 *
 	 * @return \Doctrine\Common\Collections\Collection 
 	 */
-	public function getCategoryAffiliates() {
-		return $this->category_affiliates;
+	public function getCategories() {
+		return $this->categories;
 	}
+
 	/**
 	 * @ORM\PrePersist
 	 */
 	public function setCreatedAtValue() {
 		$this->created_at = new \DateTime();
+	}
+
+	/**
+	 * @ORM\PrePersist
+	 */
+	public function setTokenValue() {
+
+		if (!$this->getToken()) {
+			$token = sha1($this->getEmail() . rand(11111, 99999));
+			$this->token = $token;
+		}
+
+		return $this;
+	}
+
+	public function activate() {
+		
+		if (!$this->getIsActive()) {
+			$this->setIsActive(true);
+		}
+
+		return $this->is_active;
+	}
+
+	public function deactivate() {
+		
+		if ($this->getIsActive()) {
+			$this->setIsActive(false);
+		}
+
+		return $this->is_active;
 	}
 }
