@@ -283,6 +283,20 @@ class JobController extends Controller {
 		
 	}
 	
+	public function searchAction(Request $request) {
+		
+		$em = $this->getDoctrine()->getManager();
+		$query = $this->getRequest()->get('query');
+	
+		if(!$query) {
+			return $this->redirect($this->generateUrl('ibw_job'));
+		}
+	
+		$jobs = $em->getRepository('IbwJobeetBundle:Job')->getForLuceneQuery($query);
+	
+		return $this->render('IbwJobeetBundle:Job:search.html.twig', array('jobs' => $jobs));
+	
+	}
 	
 	/**
 	 * Deletes a Job entity.
