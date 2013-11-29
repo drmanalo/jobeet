@@ -283,21 +283,31 @@ class JobController extends Controller {
 		
 	}
 	
-	public function searchAction(Request $request) {
-		
-		$em = $this->getDoctrine()->getManager();
-		$query = $this->getRequest()->get('query');
-	
-		if(!$query) {
-			return $this->redirect($this->generateUrl('ibw_job'));
-		}
-	
-		$jobs = $em->getRepository('IbwJobeetBundle:Job')->getForLuceneQuery($query);
-	
-		return $this->render('IbwJobeetBundle:Job:search.html.twig', array('jobs' => $jobs));
-	
-	}
-	
+	public function searchAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $query = $this->getRequest()->get('query');
+ 
+        if(!$query) {
+            if(!$request->isXmlHttpRequest()) {
+                return $this->redirect($this->generateUrl('ibw_job'));
+            } else {
+                return new Response('No results.');
+            }
+        }
+ 
+        $jobs = $em->getRepository('IbwJobeetBundle:Job')->getForLuceneQuery($query);
+ 
+        if($request->isXmlHttpRequest()) {
+            if('*' == $query || !$jobs || $query == '') {
+                return new Response('No results.');
+            }
+ 
+            return $this->render('IbwJobeetBundle:Job:list.html.twig', array('jobs' => $jobs));
+        }
+ 
+        return $this->render('IbwJobeetBundle:Job:search.html.twig', array('jobs' => $jobs));
+    }
 	/**
 	 * Deletes a Job entity.
 	 *
