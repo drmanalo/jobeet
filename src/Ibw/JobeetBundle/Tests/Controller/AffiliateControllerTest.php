@@ -16,8 +16,8 @@ class AffiliateControllerTest extends WebTestCase {
 	private $em;
 	private $application;
 
-	public function setUp() {
-		
+	public function setUp() 
+	{
 		static::$kernel = static::createKernel();
 		static::$kernel->boot();
 
@@ -67,63 +67,59 @@ class AffiliateControllerTest extends WebTestCase {
 		$executor = new \Doctrine\Common\DataFixtures\Executor\ORMExecutor($this->em, $purger);
 		$executor->execute($loader->getFixtures());
 	}
-
-	public function testAffiliateForm() {
-		
+	
+	public function testAffiliateForm()
+	{
 		$client = static::createClient();
-		$crawler = $client->request('GET', '/affiliate/new');
-
+		$crawler = $client->request('GET', '/en/affiliate/new');
+	
 		$this->assertEquals('Ibw\JobeetBundle\Controller\AffiliateController::newAction', $client->getRequest()->attributes->get('_controller'));
-
+	
 		$form = $crawler->selectButton('Submit')->form(array(
-				'affiliate[url]' => 'http://sensio-labs.com/',
-				'affiliate[email]' => 'jobeet@example.com'
+				'affiliate[url]'   => 'http://sensio-labs.com/',
+				'affiliate[email]' => 'fabien.potencier@example.com'
 		));
-
+	
 		$client->submit($form);
 		$this->assertEquals('Ibw\JobeetBundle\Controller\AffiliateController::createAction', $client->getRequest()->attributes->get('_controller'));
-
+	
 		$kernel = static::createKernel();
 		$kernel->boot();
 		$em = $kernel->getContainer()->get('doctrine.orm.entity_manager');
-
-		$query = $em->createQuery('SELECT count(a.email) FROM IbwJobeetBundle:Affiliate a WHERE a.email = :email');
-		$query->setParameter('email', 'jobeet@example.com');
-		$this->assertEquals(1, $query->getSingleScalarResult());
-
-		$crawler = $client->request('GET', '/affiliate/new');
+	
+		$crawler = $client->request('GET', '/en/affiliate/new');
 		$form = $crawler->selectButton('Submit')->form(array(
-				'affiliate[email]'        => 'not.an.email'
+				'affiliate[email]'        => 'not.an.email',
 		));
 		$crawler = $client->submit($form);
-
+	
 		// check if we have 1 errors
 		$this->assertTrue($crawler->filter('#affiliate_email')->count() == 1);
-	
 	}
 
-	public function testCreate() {
-		
+	public function testCreate()
+	{
 		$client = static::createClient();
-		$crawler = $client->request('GET', '/affiliate/new');
+		$crawler = $client->request('GET', '/en/affiliate/new');
 		$form = $crawler->selectButton('Submit')->form(array(
-				'affiliate[url]' => 'http://sensio-labs.com/',
+				'affiliate[url]'   => 'http://sensio-labs.com/',
 				'affiliate[email]' => 'address@example.com'
 		));
-
+	
 		$client->submit($form);
 		$client->followRedirect();
-
+	
 		$this->assertEquals('Ibw\JobeetBundle\Controller\AffiliateController::waitAction', $client->getRequest()->attributes->get('_controller'));
-
+	
 		return $client;
 	}
-
-	public function testWait() {
-		
+	
+	public function testWait()
+	{
 		$client = static::createClient();
-		$crawler = $client->request('GET', '/affiliate/wait');
-
+		$crawler = $client->request('GET', '/en/affiliate/wait');
+	
 		$this->assertEquals('Ibw\JobeetBundle\Controller\AffiliateController::waitAction', $client->getRequest()->attributes->get('_controller'));
 	}
+	
 }

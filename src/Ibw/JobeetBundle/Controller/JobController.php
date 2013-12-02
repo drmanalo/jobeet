@@ -19,6 +19,12 @@ class JobController extends Controller {
 	 */
 	public function indexAction() {
 
+		$request = $this->getRequest();
+		
+		if($request->get('_route') == 'IbwJobeetBundle_nonlocalized') {
+			return $this->redirect($this->generateUrl('ibw_jobeet_homepage'));
+		}
+		
 		$em = $this->getDoctrine()->getManager();
 
 		$categories = $em->getRepository('IbwJobeetBundle:Category')
